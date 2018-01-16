@@ -4,14 +4,12 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
-
 function resolve (dir) {
     return path.join(__dirname, dir);
 }
-
 module.exports = {
     entry: {
-        'main': '@/main',
+        main: '@/main',
         'vender-base': '@/vendors/vendors.base.js',
         'vender-exten': '@/vendors/vendors.exten.js'
     },
@@ -24,16 +22,6 @@ module.exports = {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: {
-                    // loaders: {
-                    //     less: ExtractTextPlugin.extract({
-                    //         use: ['css-loader?minimize', 'autoprefixer-loader', 'less-loader'],
-                    //         fallback: 'vue-style-loader'
-                    //     }),
-                    //     css: ExtractTextPlugin.extract({
-                    //         use: ['css-loader', 'autoprefixer-loader'],
-                    //         fallback: 'vue-style-loader'
-                    //     })
-                    // }
                     loaders: {
                         css: 'vue-style-loader!css-loader',
                         less: 'vue-style-loader!css-loader!less-loader'
@@ -69,7 +57,7 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: ExtractTextPlugin.extract({
-                    use: ['autoprefixer-loader', 'less-loader'],
+                    use: ['css-loader?minimize','autoprefixer-loader', 'less-loader'],
                     fallback: 'style-loader'
                 }),
             },

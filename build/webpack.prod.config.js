@@ -19,15 +19,15 @@ fs.open('./build/env.js', 'w', function(err, fd) {
 module.exports = merge(webpackBaseConfig, {
     output: {
         publicPath: '/static/',  // 修改 https://iv...admin 这部分为你的服务器域名 
-        filename: '[name].[hash:7].js',
-        chunkFilename: '[name].[hash:7].chunk.js'
+        filename: '[name].[hash].js',
+        chunkFilename: '[name].[hash].chunk.js'
     },
     plugins: [
         new cleanWebpackPlugin(['dist/*'], {
             root: path.resolve(__dirname, '../')
         }),
         new ExtractTextPlugin({
-            filename: '[name].[hash:7].css',
+            filename: '[name].[hash].css',
             allChunks: true
         }),
         new webpack.optimize.CommonsChunkPlugin({
@@ -60,10 +60,14 @@ module.exports = merge(webpackBaseConfig, {
                 from: 'td_icon.ico'
             },
             {
-                from: 'src/views/main-components/theme-switch/theme',
+                from: 'src/styles/fonts',
+                to: 'fonts'
             },
             {
-                from: 'src/views/my-components/text-editor/tinymce',
+                from: 'src/views/main-components/theme-switch/theme'
+            },
+            {
+                from: 'src/views/my-components/text-editor/tinymce'
             }
         ], {
             ignore: [
@@ -74,7 +78,7 @@ module.exports = merge(webpackBaseConfig, {
             title: 'iView admin v' + package.version,
             favicon: './td_icon.ico',
             filename: '../index.html',
-            template: './src/template/index.ejs',
+            template: '!!ejs-loader!./src/template/index.ejs',
             inject: false
         })
     ]
