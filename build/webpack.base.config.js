@@ -11,6 +11,7 @@ module.exports = {
     entry: {
         main: '@/main',
         'vender-base': '@/vendors/vendors.base.js',
+        'vendors.area': '@/vendors/vendors.area.js',
         'vender-exten': '@/vendors/vendors.exten.js'
     },
     output: {
@@ -96,6 +97,7 @@ module.exports = {
         alias: {
             'vue': 'vue/dist/vue.esm.js',
             '@': resolve('../src'),
+            'iview':resolve('../src/iview')
         }
     }
 };

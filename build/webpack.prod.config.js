@@ -19,15 +19,15 @@ fs.open('./build/env.js', 'w', function(err, fd) {
 module.exports = merge(webpackBaseConfig, {
     output: {
         publicPath: '/static/',  // 修改 https://iv...admin 这部分为你的服务器域名 
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].chunk.js'
+        filename: '[name].[hash:7].js',
+        chunkFilename: '[name].[hash:7].chunk.js'
     },
     plugins: [
         new cleanWebpackPlugin(['dist/*'], {
             root: path.resolve(__dirname, '../')
         }),
         new ExtractTextPlugin({
-            filename: '[name].[hash].css',
+            filename: '[name].[hash:7].css',
             allChunks: true
         }),
         new webpack.optimize.CommonsChunkPlugin({
@@ -57,7 +57,8 @@ module.exports = merge(webpackBaseConfig, {
         // }),
         new CopyWebpackPlugin([
             {
-                from: 'td_icon.ico'
+                from: 'td_icon.ico',
+                to:'../'
             },
             {
                 from: 'src/styles/fonts',

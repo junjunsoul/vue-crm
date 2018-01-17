@@ -1,0 +1,1 @@
+import iviewArea from 'iview-area';
