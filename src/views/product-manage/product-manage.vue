@@ -2,7 +2,7 @@
 	@import "./product-manage.less";
 </style>
 <template>
-
+	
 </template>
 <script>
 	//商品资料管理

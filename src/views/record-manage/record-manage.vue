@@ -1,5 +1,5 @@
 <style lang='less'>
-	@import "./user-manage.less";
+	@import "./record-manage.less";
 </style>
 <template>
 

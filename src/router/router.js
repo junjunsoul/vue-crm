@@ -104,6 +104,61 @@ export const appRouter = [
         ]
     },
     {
+        path: '/product',
+        icon: 'clipboard',
+        name: 'product',
+        title: '商品资料管理',
+        access: 0,
+        component: Main,
+        children:[
+            { path: 'index', title: '商品资料管理', access: 0, name: 'product_index', component:() => import('@/views/product-manage/product-manage.vue') }
+        ]
+    },
+    {
+        path: '/record',
+        icon: 'clipboard',
+        name: 'record',
+        title: '客户档案管理',
+        access: 0,
+        component: Main,
+        children:[
+            { path: 'index', title: '客户档案管理', access: 0, name: 'record_index', component:() => import('@/views/record-manage/record-manage.vue') }
+        ]
+    },
+    {
+        path: '/sell',
+        icon: 'clipboard',
+        name: 'sell',
+        title: '销售管理',
+        access: 0,
+        component: Main,
+        children:[
+            { path: 'index', title: '销售管理', access: 0, name: 'sell_index', component:() => import('@/views/sell-manage/sell-manage.vue') }
+        ]
+    },
+    {
+        path: '/user',
+        icon: 'clipboard',
+        name: 'user',
+        title: '用户管理',
+        access: 0,
+        component: Main,
+        children:[
+            { path: 'index', title: '用户管理', access: 0, name: 'user_index', component:() => import('@/views/user-manage/user-manage.vue') }
+        ]
+    },   
+    {
+        path: '/relation',
+        icon: 'clipboard',
+        name: 'relation',
+        title: '客户关系管理',
+        access: 0,
+        component: Main,
+        children:[
+            { path: 'index', title: '客户关系管理', access: 0, name: 'relation_index', component:() => import('@/views/relation-manage/relation-manage.vue') }
+        ]
+    },
+    {
         path: '/error-page',
         icon: 'android-sad',
         title: '错误页面',
@@ -112,7 +167,18 @@ export const appRouter = [
         children: [
             { path: 'index', title: '错误页面', name: 'errorpage_index', component: () => import('@/views/error-page/error-page.vue') }
         ]
-    }
+    },
+    // {
+    //     path: '',
+    //     icon: '',
+    //     title: '',
+    //     name: '',
+    //     component: Main,
+    //     children:[
+    //         { path: '', title: '', access: 0, name: '', component:() => import('')}
+    //     ]
+    // },
+
 ];
 
 // 所有上面定义的路由都要写在下面的routers里

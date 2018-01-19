@@ -5,7 +5,7 @@
 
 </template>
 <script>
-	//用户管理
+	//客户关系管理
 	export default{
 		name:'relationManage',
 		data(){
