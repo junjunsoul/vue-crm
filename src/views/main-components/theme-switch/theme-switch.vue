@@ -116,7 +116,7 @@ export default {
             if (config.env.indexOf('dev') > -1) {
                 stylePath = './src/views/main-components/theme-switch/theme/';
             } else {
-                stylePath = 'dist/';
+                stylePath = 'static/';
             }
             if (mainTheme !== 'b') {
                 path = stylePath + mainTheme + '.css';
@@ -131,7 +131,7 @@ export default {
         if (config.env.indexOf('dev') > -1) {
             path = './src/views/main-components/theme-switch/theme/';
         } else {
-            path = 'dist/';
+            path = 'static/';
         }
         let name = Cookies.get('user');
         if (localStorage.theme) {

@@ -1,13 +1,13 @@
 <style lang='less'>
-	@import "./relation-manage.less";
+	@import "./short_message_send.less";
 </style>
 <template>
-
+	
 </template>
 <script>
-	//客户关系管理
+	//短信发送页面
 	export default{
-		name:'relationManage',
+		name:'short_message_send',
 		data(){
 			return {}
 		}
