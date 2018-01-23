@@ -11,7 +11,12 @@
 		      <Button type="primary" icon="ios-search">查询</Button>
 		    </Card>
 	    </div>
-		<Table border :columns="list_columns" :data="list_data"></Table>
+		<div class="page">
+			<Page :total="100" show-elevator></Page>
+		</div>	    
+		<Table border height='500' :columns="list_columns" :data="list_data"></Table>
+
+		
 	    <Modal
 	        v-model="cu_modali"
 	        width="850"
@@ -119,6 +124,19 @@
 		        </Row>
 	        </Form>
 	    </Modal>
+	    <Modal v-model="delete_modal" width="360">
+	        <p slot="header" style="color:#f60;text-align:center">
+	            <Icon type="information-circled"></Icon>
+	            <span>删除确认</span>
+	        </p>
+	        <div style="text-align:center">
+	            <p>此数据删除后，不可恢复。</p>
+	            <p>是否继续删除？</p>
+	        </div>
+	        <div slot="footer">
+	            <Button type="error" size="large" long :loading="modal_loading" @click="del">删除</Button>
+	        </div>
+	    </Modal>
 	</div>
 </template>
 <script>
@@ -128,10 +146,13 @@
 		data(){
 			return {
 				query_c_name: '',
+				delete_modal: false,
+				modal_loading: false,
+				cur_sel_index:null,
 				list_columns: [
-					{ width: 130, key: 'C_code', title: '客戶编号', sortable: true, fixed: 'left' },
+					{ width: 130, key: 'C_code', title: '客戶编号', sortable: true },
+					{ width: 130, key: 'C_name', title: '客户姓名', sortable: true },					
 					{ width: 130, key: 'C_type', title: '客戶类型', sortable: true },
-					{ width: 130, key: 'C_name', title: '客户姓名', sortable: true },
 					{ width: 130, key: 'C_sex', title: '性别', sortable: true },
 					{ width: 130, key: 'C_country', title: '国家', },
 					{ width: 130, key: 'C_area', title: '区域', },
@@ -153,21 +174,38 @@
                                 h('Button', {
                                     props: {
                                         type: 'text',
-                                        size: 'small'
+                                        size: 'small',
+                                        icon: 'ios-search-strong'
+                                    },
+                                    on: {
+                                    	click: () => {
+                                    		this.show(params.index)
+                                    	}
                                     }
-                                }, '查看'),
+                                }, ''),
                                 h('Button', {
                                     props: {
                                         type: 'text',
-                                        size: 'small'
+                                        size: 'small',
+                                		icon: 'edit'
+                                    },
+                                    on: {
+                                    	click: () => {
+                                    		this.edit(params.index)
+                                    	}
                                     }
-                                }, '编辑'),
+                                }, ''),
                                 h('Button', {
                                 	props: {
                                 		type: 'text',
-                                		size: 'small'
+                                		icon: 'trash-a'
+                                	},
+                                	on: {
+                                		click: () => {
+                                			this.remove(params.index)
+                                		}
                                 	}
-                                },'删除')
+                                },'')
                             ]);
 						}
 					}
@@ -192,27 +230,7 @@
 						C_createdate: '2017-06-23',
 						C_updatedate: '2017-05-17',
 						C_state: '暂存'
-					},
-					{
-						C_code :'x00002' , 
-						C_type: '学生' , 
-						C_name: '陈晓丽' , 
-						C_sex: '女' ,
-						C_country: '中国' , 
-						C_area: '华南区' ,
-						C_province: '安徽省',
-						C_city: '合肥市',
-						C_address: '某某公寓',
-						C_myopia_date: '2018-12-30',
-						C_emergency_contact: '阿斯巴',
-						C_contact_phone: '13277781234',
-						C_contact_type: '朋友',
-						C_default_contact: '紧急联系人',
-						C_remark: '不是本地人不经常出现在本市区',
-						C_createdate: '2017-06-23',
-						C_updatedate: '2017-05-17',
-						C_state: '暂存'
-					},
+					}
 				],
 				cu_modali: false ,
 				record_form: {
@@ -241,7 +259,45 @@
 			},
 			cancel(){
 				this.cu_modali=false
-			}
+			},
+            show (index) {
+            	
+                this.$Modal.info({
+                    title: '用户信息',
+                    content: this.show_handle(this.list_data[index])
+                })
+            },
+            remove (index) {
+            	this.delete_modal = true  
+            	this.cur_sel_index = index
+            },
+            edit (index) {
+            	this.cu_modali = true
+            	//this.list_data
+            },
+            del () {
+                this.modal_loading = true
+                setTimeout(() => {
+                    this.modal_loading = false
+                    this.delete_modal = false
+                    this.$Message.success('删除成功！')
+                    this.list_data.splice(this.cur_sel_index, 1)
+                }, 500);
+            },
+			show_handle(data){
+				var re_str=''
+				this.list_columns.map(item => {
+					if(item.title&&data[item.key]){
+						re_str += `
+						<div class="show_info">
+							<span class="title">${item.title}:</span>
+							<span class="text">${data[item.key]}</span>
+						</div>
+						`
+					}
+				})
+				return re_str
+			},
 		}
 	}
 </script>
