@@ -77,7 +77,7 @@ export const appRouter = [
         component: Main,
         children:[
             { path: 'user-manage', title: '用户管理', access: 0, name: 'user-manage', icon: 'ios-people', component:() => import('@/views/user-manage/user-manage.vue') },
-            { path: 'user-access', title: '权限管理', name: 'user-access', icon: 'key', component: () => import('@/views/user-manage/access.vue') }
+            { path: 'user-access', title: '权限管理', access: 0, name: 'user-access', icon: 'key', component: () => import('@/views/user-manage/access.vue') }
         ]
     },    
     {
@@ -89,7 +89,7 @@ export const appRouter = [
         component: Main,
         children:[
             { path: 'short_message_send', title: '短信发送', access: 0, name: 'short_message_send', icon: 'android-send', component:() => import('@/views/relation-manage/short_message_send.vue') },
-            { path: 'short_send', title: '短信查询', access: 0, name: 'short_send', icon: 'clipboard', component:() => import('@/views/relation-manage/short_send.vue') },
+            { path: 'short_send', title: '已发送短信', access: 0, name: 'short_send', icon: 'clipboard', component:() => import('@/views/relation-manage/short_send.vue') },
         ]
     }
 ];

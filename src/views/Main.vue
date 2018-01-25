@@ -46,7 +46,7 @@
                                     <DropdownItem name="loginout" divided>退出登录</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
-                            <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                            <Avatar icon="person" style="background-color: #39898c;margin-left: 10px;"></Avatar>
                         </Row>
                     </div>
                 </div>
@@ -100,9 +100,6 @@
             },
             currentPath () {
                 return this.$store.state.app.currentPath; // 当前面包屑数组
-            },
-            avatorPath () {
-                return localStorage.avatorImgPath;
             },
             cachePage () {
                 return this.$store.state.app.cachePage;

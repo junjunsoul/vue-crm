@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import axios from 'axios';
 import env from '../../build/env';
 import semver from 'semver';
@@ -7,20 +8,83 @@ let util = {
 
 };
 util.title = function (title) {
-    title = title || 'iView admin';
+    title = title || '客户关系管理系统';
     window.document.title = title;
 };
 
 const ajaxUrl = env === 'development'
-    ? 'http://127.0.0.1:8888'
+    ? 'http://localhost:8080'
     : env === 'production'
         ? 'https://www.url.com'
         : 'https://debug.url.com';
 
 util.ajax = axios.create({
     baseURL: ajaxUrl,
-    timeout: 30000
+    timeout: 30000,
+    validateStatus: function (status) {
+        let res=status >= 200 && status < 300; // 默认的
+        if(res==false){
+            vueVm.$Notice.error({
+                title: '错误码：'+status,
+                desc: '网络有问题咯，请联系管理员大大！'
+            })
+        }
+        return res
+    }
 });
+
+util.search = function (data, argumentObj) {
+    let res = data;
+    let dataClone = data;
+    for (let argu in argumentObj) {
+        if (argumentObj[argu].length > 0) {
+            res = dataClone.filter(d => {
+                return d[argu].indexOf(argumentObj[argu]) > -1;
+            });
+            dataClone = res;
+        }
+    }
+    return res;
+}
+function typeOf(obj) {
+    const toString = Object.prototype.toString;
+    const map = {
+        '[object Boolean]'  : 'boolean',
+        '[object Number]'   : 'number',
+        '[object String]'   : 'string',
+        '[object Function]' : 'function',
+        '[object Array]'    : 'array',
+        '[object Date]'     : 'date',
+        '[object RegExp]'   : 'regExp',
+        '[object Undefined]': 'undefined',
+        '[object Null]'     : 'null',
+        '[object Object]'   : 'object'
+    };
+    return map[toString.call(obj)];
+}
+util.deepCopy = function(data) {
+    const t = typeOf(data);
+    let o;
+
+    if (t === 'array') {
+        o = [];
+    } else if ( t === 'object') {
+        o = {};
+    } else {
+        return data;
+    }
+
+    if (t === 'array') {
+        for (let i = 0; i < data.length; i++) {
+            o.push(this.deepCopy(data[i]));
+        }
+    } else if ( t === 'object') {
+        for (let i in data) {
+            o[i] = this.deepCopy(data[i]);
+        }
+    }
+    return o;
+}
 
 util.inOf = function (arr, targetArr) {
     let res = true;
@@ -249,21 +313,6 @@ util.fullscreenEvent = function (vm) {
     // 权限菜单过滤相关
     vm.$store.commit('updateMenulist');
     // 全屏相关
-};
-
-util.checkUpdate = function (vm) {
-    axios.get('https://api.github.com/repos/iview/iview-admin/releases/latest').then(res => {
-        let version = res.data.tag_name;
-        vm.$Notice.config({
-            duration: 0
-        });
-        if (semver.lt(packjson.version, version)) {
-            vm.$Notice.info({
-                title: 'iview-admin更新啦',
-                desc: '<p>iView-admin更新到了' + version + '了，去看看有哪些变化吧</p><a style="font-size:13px;" href="https://github.com/iview/iview-admin/releases" target="_blank">前往github查看</a>'
-            });
-        }
-    });
 };
 
 export default util;

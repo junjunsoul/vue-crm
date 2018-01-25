@@ -9,12 +9,12 @@ import App from './app.vue';
 import '@/locale';
 import 'iview/styles/index.less';
 import VueI18n from 'vue-i18n';
-import util from './libs/util';
 
 Vue.use(VueI18n);
 Vue.use(iView);
 Vue.use(iviewArea);
-new Vue({
+
+window.vueVm=new Vue({
     el: '#app',
     router: router,
     store: store,
@@ -29,8 +29,6 @@ new Vue({
         this.$store.commit('initCachepage');
         // 权限菜单过滤相关
         this.$store.commit('updateMenulist');
-        // iview-admin检查更新
-        util.checkUpdate(this);
     },
     created () {
         let tagsList = [];
