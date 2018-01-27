@@ -94,7 +94,7 @@
 		        	</Col>
 	        		<Col span="8">	
 			        	<FormItem label="近视时间：">
-			        		 <DatePicker type="date" :value="record_form.C_myopia_date" style="width:182px;" placeholder="选择日期"></DatePicker>
+			        		 <DatePicker type="date" v-model="record_form.C_myopia_date" style="width:182px;" placeholder="选择日期"></DatePicker>
 				        </FormItem>
 			    	</Col>		        	
 		        </Row>

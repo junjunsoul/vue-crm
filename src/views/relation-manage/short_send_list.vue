@@ -1,5 +1,5 @@
 <style lang='less'>
-	@import "./short_send.less";
+	@import "./short_send_list.less";
 </style>
 <template>
 
