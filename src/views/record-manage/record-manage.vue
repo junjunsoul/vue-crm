@@ -3,11 +3,11 @@
 </style>
 <template>
 	<div class="record">
-		<Button type="primary" icon="plus-round" @click="cu_modali = true">添加客户信息</Button>
+		<Button type="primary" icon="plus-round" @click="add">添加客户信息</Button>
 		<div class="record-query-card">
 		    <Card shadow>
 		      <p>搜索条件：</p>
-		      <Input v-model="maintb.searchName" placeholder="输入客户姓名..." style="width: 150px"></Input>
+		      <Input v-model="maintb.filter.C_name" placeholder="输入客户姓名..." style="width: 150px"></Input>
 		      
 		      <Button type="primary" icon="ios-search" @click="sever_search">查询</Button>
 		    </Card>
@@ -35,16 +35,16 @@
 	        :loading="loading"
 	        @on-ok="handleSubmit"
 	        @on-cancel="cancel">
-	        <Form :model="record_form" ref="record_form" :rules="formRules" :label-width="90" >
+	        <Form :model="form_item" ref="form_item" :rules="formRules" :label-width="90" >
 	        	<Row>
 	        		<Col span="8">	
 			        	<FormItem label="客户编码：" prop="C_code">
-				            <Input v-model="record_form.C_code" placeholder="请输入编码..."></Input>
+				            <Input v-model="form_item.C_code" placeholder="请输入编码..."></Input>
 				        </FormItem>
 			    	</Col>
 			    	<Col span="8">
 			        	<FormItem label="客户类型：">
-				            <Select v-model="record_form.C_type">
+				            <Select v-model="form_item.C_type">
 				                <Option value="0">学生</Option>
 				                <Option value="1">社会人士</Option>
 			            	</Select>
@@ -52,14 +52,14 @@
 			        </Col>
 	        		<Col span="8">	
 			        	<FormItem label="姓名：" prop="C_name">
-				            <Input v-model="record_form.C_name" placeholder="请输入姓名..."></Input>
+				            <Input v-model="form_item.C_name" placeholder="请输入姓名..."></Input>
 				        </FormItem>
 			    	</Col>			        
 		        </Row>
 	        	<Row>
 			    	<Col span="8">
 			        	<FormItem label="性别：">
-				            <Select v-model="record_form.C_sex">
+				            <Select v-model="form_item.C_sex">
 				                <Option value="0">男</Option>
 				                <Option value="1">女</Option>
 			            	</Select>
@@ -67,7 +67,7 @@
 			        </Col>	        		
 	        		<Col span="8">	
 			        	<FormItem label="国家：">
-				            <Select v-model="record_form.C_country">
+				            <Select v-model="form_item.C_country">
 				                <Option value="001">中国</Option>
 				                <Option value="002">日本</Option>
 			            	</Select>
@@ -75,7 +75,7 @@
 			    	</Col>
 			    	<Col span="8">
 			        	<FormItem label="区域：">
-				            <Select v-model="record_form.C_area">
+				            <Select v-model="form_item.C_area">
 				                <Option value="01">华南区</Option>
 				                <Option value="02">华中区</Option>
 			            	</Select>
@@ -87,31 +87,31 @@
 			        	<FormItem label="省/市/区：">
 			        		<Row>
 			        			<Col span="24">
-	                        		<al-selector v-model="record_form.C_p_c" searchable level='2'/>
+	                        		<al-selector v-model="form_item.C_p_c" searchable level='2'/>
 	                        	</Col>
 	                        </Row>			        
                     	</FormItem>
 		        	</Col>
 	        		<Col span="8">	
 			        	<FormItem label="近视时间：">
-			        		 <DatePicker type="date" v-model="record_form.C_myopia_date" style="width:182px;" placeholder="选择日期"></DatePicker>
+			        		 <DatePicker type="date" v-model="form_item.C_myopia_date" style="width:182px;" placeholder="选择日期"></DatePicker>
 				        </FormItem>
 			    	</Col>		        	
 		        </Row>
 	        	<Row>
 			    	<Col span="8">
 			        	<FormItem label="紧急联系人：">
-			        		<Input v-model="record_form.C_emergency_contact" placeholder="请输入联系人..."></Input>
+			        		<Input v-model="form_item.C_emergency_contact" placeholder="请输入联系人..."></Input>
 			        	</FormItem>
 			        </Col>	        		
 	        		<Col span="8">	
 			        	<FormItem label="联系电话：">
-			        		<Input v-model="record_form.C_contact_phone" placeholder="请输入电话号码..."></Input>
+			        		<Input v-model="form_item.C_contact_phone" placeholder="请输入电话号码..."></Input>
 				        </FormItem>
 			    	</Col>
 			    	<Col span="8">
 			        	<FormItem label="联系人类别：">
-				            <Select v-model="record_form.C_contact_type">
+				            <Select v-model="form_item.C_contact_type">
 				                <Option value="0">本人</Option>
 				                <Option value="1">朋友</Option>
 				                <Option value="2">亲人</Option>
@@ -122,14 +122,14 @@
 		        <Row>
 		        	<Col span="24">
 			        	<FormItem label="详细地址：">	
-			        		<Input v-model="record_form.C_address" placeholder="请输入详细地址..."></Input>
+			        		<Input v-model="form_item.C_address" placeholder="请输入详细地址..."></Input>
                     	</FormItem>
 		        	</Col>
 		        </Row>
 		        <Row>
 		        	<Col span="24">
 			        	<FormItem label="备注：">	
-			        		<Input v-model="record_form.C_remark" type="textarea" :rows="4" placeholder="请输入备注..."></Input>
+			        		<Input v-model="form_item.C_remark" type="textarea" :rows="4" placeholder="请输入备注..."></Input>
                     	</FormItem>
 		        	</Col>
 		        </Row>
@@ -158,6 +158,24 @@
 		delete: '/bar',
 		search: '/bar'
 	}
+    let default_form = {
+		C_code :'x00001' , 
+		C_type: '0' , 
+		C_name: '陈晓丽' , 
+		C_sex: '1' ,
+		C_country: '001' , 
+		C_area: '01' ,
+		C_p_c:['110000','110100','110101'],
+		C_province: '安徽省',
+		C_city: '合肥市',
+		C_address: '某某公寓',
+		C_myopia_date: '2017-12-30',
+		C_emergency_contact: '陈旭华',
+		C_contact_phone: '13277781234',
+		C_contact_type: '0',
+		C_default_contact: '紧急联系人',
+		C_remark: '不是本地人不经常出现在本市区',
+	}
 	export default{
 		name:'recordManage',
 		data(){
@@ -166,11 +184,14 @@
 				modal_loading: false,
 				loading: true ,	
 				tb_loading: false ,		
+				cu_modali: false ,				
 				maintb: {
 					cur_sel_index:null,
-					searchName: '',
+					filter: {
+						C_name:''
+					},
+					total: 100,					
 					initTable: [],
-					total: 100,
 					list_columns: [
 						{ width: 130, key: 'C_code', title: '客戶编号', sortable: true },
 						{ width: 130, key: 'C_name', title: '客户姓名', sortable: true },					
@@ -255,25 +276,7 @@
 						}
 					],					
 				},
-				cu_modali: false ,
-				record_form: {
-					C_code :'x00001' , 
-					C_type: '0' , 
-					C_name: '陈晓丽' , 
-					C_sex: '1' ,
-					C_country: '001' , 
-					C_area: '01' ,
-					C_p_c:['110000','110100','110101'],
-					C_province: '安徽省',
-					C_city: '合肥市',
-					C_address: '某某公寓',
-					C_myopia_date: '2017-12-30',
-					C_emergency_contact: '陈旭华',
-					C_contact_phone: '13277781234',
-					C_contact_type: '0',
-					C_default_contact: '紧急联系人',
-					C_remark: '不是本地人不经常出现在本市区',
-				},
+				form_item:{},
 	            formRules: {
 	                C_name: [
 	                    { required: true, message: '请填客户名称', trigger: 'blur' }
@@ -300,6 +303,10 @@
                 })
             },
 
+            add () {
+            	this.form_item=util.deepCopy(default_form)
+            	this.cu_modali = true
+            },
             remove (index) {
             	this.delete_modal = true  
             	this.maintb.cur_sel_index = index
@@ -313,7 +320,7 @@
             },
 
             edit (index) {
-            	this.record_form=util.deepCopy(this.maintb.list_data[index])
+            	this.form_item=util.deepCopy(this.maintb.list_data[index])
             	this.cu_modali = true
             },
             del () {
@@ -346,21 +353,17 @@
 			},
 
 			sever_search(){
-				this.getData(1,this.maintb.searchName)
+				this.getData(1,this.maintb.filter)
 			},
 
 			page_chang(cur){
 				this.getData(cur)
 			},
 
-			getData(page=1,c_name=''){
-				let params={page:page}
-				if(c_name){
-					params.C_name=c_name
-				}
+			getData(page=1,filter={}){
 				this.tb_loading=true
 				this.maintb.list_data=[]
-	        	util.ajax.post(url.search,params).then((res) => {
+	        	util.ajax.post(url.search,Object.assign({page:page},filter)).then((res) => {
 	        		if(res.code){
 	        			//this.maintb.total=res.total
 						//this.maintb.list_data=data
@@ -370,9 +373,9 @@
 			},
 
 	        handleSubmit () {
-	            this.$refs['record_form'].validate((valid) => {
+	            this.$refs['form_item'].validate((valid) => {
 	                if (valid) {
-			        	util.ajax.post(url.operate,this.record_form).then((res) => {
+			        	util.ajax.post(url.operate,this.form_item).then((res) => {
 			        		if(res.code){
 			        			this.$Message.success('操作成功！');
 			        			this.getData()
@@ -398,7 +401,7 @@
 		},
 		computed: {
 			filter_tb_data(){
-				let r_d=util.search(this.maintb.list_data,{C_name:this.maintb.searchName})
+				let r_d=util.search(this.maintb.list_data,this.maintb.filter)
 				return r_d
 			}
 		},

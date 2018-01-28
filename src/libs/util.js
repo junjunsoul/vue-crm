@@ -21,6 +21,8 @@ const ajaxUrl = env === 'development'
 util.ajax = axios.create({
     baseURL: ajaxUrl,
     timeout: 30000,
+    responseType: 'json', 
+    // headers: {'Content-Type': 'application/json'},
     validateStatus: function (status) {
         let res=status >= 200 && status < 300; // 默认的
         if(res==false){

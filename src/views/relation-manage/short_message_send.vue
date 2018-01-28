@@ -69,7 +69,10 @@
         		this.formdata.msgText+=tag
         	},
             getMockData () {
-                let mockData = [];
+                let mockData = []
+                util.ajax.post('http://120.79.137.79/LDproject/public/add',{}).then((res) => {
+                    console.log(res)
+                })
                 // util.ajax.post(url.list,{}).then((res) => {
                 // 	if(res.code){
                 // 		this.mockData=res.data
