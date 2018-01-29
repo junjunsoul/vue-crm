@@ -3,6 +3,7 @@ import axios from 'axios';
 import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
+import AreaData from 'area-data';
 
 let util = {
 
@@ -34,6 +35,17 @@ util.ajax = axios.create({
         return res
     }
 });
+
+util.areaName = function (code){
+    for(const i in AreaData){
+        if(AreaData[i][code]){
+            return AreaData[i][code]
+        }
+    }
+    AreaData.map((item) => {
+
+    })
+}
 
 util.search = function (data, argumentObj) {
     let res = data;

@@ -45,8 +45,8 @@
 			    	<Col span="8">
 			        	<FormItem label="客户类型：">
 				            <Select v-model="form_item.C_type">
-				                <Option value="0">学生</Option>
-				                <Option value="1">社会人士</Option>
+				                <Option value="学生">学生</Option>
+				                <Option value="社会人士">社会人士</Option>
 			            	</Select>
 			        	</FormItem>
 			        </Col>
@@ -60,34 +60,29 @@
 			    	<Col span="8">
 			        	<FormItem label="性别：">
 				            <Select v-model="form_item.C_sex">
-				                <Option value="0">男</Option>
-				                <Option value="1">女</Option>
+				                <Option value="男">男</Option>
+				                <Option value="女">女</Option>
 			            	</Select>
 				        </FormItem>
-			        </Col>	        		
-	        		<Col span="8">	
-			        	<FormItem label="国家：">
-				            <Select v-model="form_item.C_country">
-				                <Option value="001">中国</Option>
-				                <Option value="002">日本</Option>
-			            	</Select>
+			        </Col>			    	
+			        <Col span="8">
+			        	<FormItem label="年龄：">
+			        		<Input v-model="form_item.C_age" placeholder="请输入年龄..."></Input>
 				        </FormItem>
-			    	</Col>
-			    	<Col span="8">
-			        	<FormItem label="区域：">
-				            <Select v-model="form_item.C_area">
-				                <Option value="01">华南区</Option>
-				                <Option value="02">华中区</Option>
-			            	</Select>
+			        </Col>			    	
+			        <Col span="8">
+			        	<FormItem label="所在学校：">
+			        		<Input v-model="form_item.C_school" placeholder="请输入学校名称..."></Input>
 				        </FormItem>
 			        </Col>
+
 		        </Row>
 		        <Row>
 		        	<Col span="16">
 			        	<FormItem label="省/市/区：">
 			        		<Row>
 			        			<Col span="24">
-	                        		<al-selector v-model="form_item.C_p_c" searchable level='2'/>
+	                        		<al-selector v-model="C_p_c" data-type='name' level='2' auto/>
 	                        	</Col>
 	                        </Row>			        
                     	</FormItem>
@@ -159,23 +154,25 @@
 		search: '/bar'
 	}
     let default_form = {
-		C_code :'x00001' , 
-		C_type: '0' , 
-		C_name: '陈晓丽' , 
-		C_sex: '1' ,
-		C_country: '001' , 
-		C_area: '01' ,
-		C_p_c:['110000','110100','110101'],
-		C_province: '安徽省',
-		C_city: '合肥市',
-		C_address: '某某公寓',
-		C_myopia_date: '2017-12-30',
-		C_emergency_contact: '陈旭华',
-		C_contact_phone: '13277781234',
-		C_contact_type: '0',
-		C_default_contact: '紧急联系人',
-		C_remark: '不是本地人不经常出现在本市区',
+		state: 'add',    	
+		C_code:'' , 
+		C_type: '' , 
+		C_name: '' , 
+		C_sex: '' ,
+		C_age: '',
+		C_school: '',
+		C_province: '',
+		C_city: '',
+		C_area: '',
+		C_address: '',
+		C_myopia_date: '',
+		C_emergency_contact: '',
+		C_contact_phone: '',
+		C_contact_type: '',
+		C_default_contact: '',
+		C_remark: '',
 	}
+	
 	export default{
 		name:'recordManage',
 		data(){
@@ -184,7 +181,8 @@
 				modal_loading: false,
 				loading: true ,	
 				tb_loading: false ,		
-				cu_modali: false ,				
+				cu_modali: false ,		
+				C_p_c:[],			
 				maintb: {
 					cur_sel_index:null,
 					filter: {
@@ -197,10 +195,9 @@
 						{ width: 130, key: 'C_name', title: '客户姓名', sortable: true },					
 						{ width: 130, key: 'C_type', title: '客戶类型', sortable: true },
 						{ width: 130, key: 'C_sex', title: '性别', sortable: true },
-						{ width: 130, key: 'C_country', title: '国家', },
-						{ width: 130, key: 'C_area', title: '区域', },
 						{ width: 130, key: 'C_province', title: '省份', },
 						{ width: 130, key: 'C_city', title: '城市', },
+						{ width: 130, key: 'C_area', title: '区域', },
 						{ width: 130, key: 'C_address', title: '详细地址', },
 						{ width: 130, key: 'C_myopia_date', title: '近视时间', sortable: true },
 						{ width: 130, key: 'C_emergency_contact', title: '紧急联系人' },
@@ -255,24 +252,23 @@
 					],
 					list_data: [
 						{
-							C_code :'x00001' , 
+							C_id :'001' , 
+							C_code:'x00001' , 
 							C_type: '学生' , 
 							C_name: '陈晓丽' , 
 							C_sex: '女' ,
-							C_country: '中国' , 
-							C_area: '华南区' ,
+							C_age: '14',
+							C_school: '北京小学',
 							C_province: '安徽省',
 							C_city: '合肥市',
-							C_address: '某某公寓111',
-							C_myopia_date: '2018-12-30',
-							C_emergency_contact: '阿斯巴',
+							C_area: '蜀山区',
+							C_address: '某某公寓',
+							C_myopia_date: '2017-12-30',
+							C_emergency_contact: '陈旭华',
 							C_contact_phone: '13277781234',
-							C_contact_type: '朋友',
+							C_contact_type: '亲人',
 							C_default_contact: '紧急联系人',
 							C_remark: '不是本地人不经常出现在本市区',
-							C_createdate: '2017-06-23',
-							C_updatedate: '2017-05-17',
-							C_state: '暂存'
 						}
 					],					
 				},
@@ -304,8 +300,10 @@
             },
 
             add () {
-            	this.form_item=util.deepCopy(default_form)
+            	this.form_item= util.deepCopy(default_form)
+            	this.C_p_c=["北京市", "市辖区", "东城区"]
             	this.cu_modali = true
+            	
             },
             remove (index) {
             	this.delete_modal = true  
@@ -320,12 +318,16 @@
             },
 
             edit (index) {
-            	this.form_item=util.deepCopy(this.maintb.list_data[index])
+            	this.form_item=Object.assign(this.form_item,this.maintb.list_data[index])
+            	this.C_p_c=[this.form_item.C_province,this.form_item.C_city,this.form_item.C_area]
+            	this.form_item.state='edit'
+            	
             	this.cu_modali = true
             },
             del () {
                 this.modal_loading = true
-	        	util.ajax.post(url.delete,{id:this.maintb.cur_sel_index}).then((res) => {
+                let id=this.maintb.list_data[this.maintb.cur_sel_index].C_id
+	        	util.ajax.post(url.delete,{C_id:id}).then((res) => {
 	        		if(res.code){
 		                    this.modal_loading = false
 		                    this.delete_modal = false
