@@ -82,7 +82,7 @@
 			        	<FormItem label="省/市/区：">
 			        		<Row>
 			        			<Col span="24">
-	                        		<al-selector v-model="C_p_c" data-type='name' level='2' auto/>
+	                        		<al-cascader v-model="C_p_c" data-type='name' level='2' auto/>
 	                        	</Col>
 	                        </Row>			        
                     	</FormItem>
@@ -301,7 +301,7 @@
 
             add () {
             	this.form_item= util.deepCopy(default_form)
-            	this.C_p_c=["北京市", "市辖区", "东城区"]
+            	this.C_p_c=[]
             	this.cu_modali = true
             	
             },
