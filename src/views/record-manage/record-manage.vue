@@ -27,19 +27,24 @@
 			</Row>
 		</div>
 		<Table border height='500' :loading="tb_loading" :columns="maintb.list_columns" :data="filter_tb_data" ref="tableCsv"></Table>
-		
 	    <Modal
 	        v-model="cu_modali"
 	        width="850"
 	        title="客户信息"
 	        :loading="loading"
+	        :mask-closable="false"
 	        @on-ok="handleSubmit"
 	        @on-cancel="cancel">
-	        <Form :model="form_item" ref="form_item" :rules="formRules" :label-width="90" >
+	        <Form :model="form_item" ref="form_item" :rules="formRules" :label-width="95" >
 	        	<Row>
 	        		<Col span="8">	
 			        	<FormItem label="客户编码：" prop="C_code">
-				            <Input v-model="form_item.C_code" placeholder="请输入编码..."></Input>
+				            <Input v-model="form_item.C_code" :disabled="C_code_disable" placeholder="请输入编码..."></Input>
+				        </FormItem>
+			    	</Col>
+	        		<Col span="8">	
+			        	<FormItem label="姓名：" prop="C_name">
+				            <Input v-model="form_item.C_name" placeholder="请输入姓名..."></Input>
 				        </FormItem>
 			    	</Col>
 			    	<Col span="8">
@@ -49,12 +54,7 @@
 				                <Option value="社会人士">社会人士</Option>
 			            	</Select>
 			        	</FormItem>
-			        </Col>
-	        		<Col span="8">	
-			        	<FormItem label="姓名：" prop="C_name">
-				            <Input v-model="form_item.C_name" placeholder="请输入姓名..."></Input>
-				        </FormItem>
-			    	</Col>			        
+			        </Col>			    				        
 		        </Row>
 	        	<Row>
 			    	<Col span="8">
@@ -77,43 +77,44 @@
 			        </Col>
 
 		        </Row>
-		        <Row>
-		        	<Col span="16">
-			        	<FormItem label="省/市/区：">
-			        		<Row>
-			        			<Col span="24">
-	                        		<al-cascader v-model="C_p_c" data-type='name' level='2' auto/>
-	                        	</Col>
-	                        </Row>			        
-                    	</FormItem>
-		        	</Col>
-	        		<Col span="8">	
-			        	<FormItem label="近视时间：">
-			        		 <DatePicker type="date" v-model="form_item.C_myopia_date" style="width:182px;" placeholder="选择日期"></DatePicker>
-				        </FormItem>
-			    	</Col>		        	
-		        </Row>
+
 	        	<Row>
 			    	<Col span="8">
-			        	<FormItem label="紧急联系人：">
+			        	<FormItem label="联系人：" prop="C_emergency_contact">
 			        		<Input v-model="form_item.C_emergency_contact" placeholder="请输入联系人..."></Input>
 			        	</FormItem>
 			        </Col>	        		
 	        		<Col span="8">	
-			        	<FormItem label="联系电话：">
+			        	<FormItem label="联系电话：" prop="C_contact_phone">
 			        		<Input v-model="form_item.C_contact_phone" placeholder="请输入电话号码..."></Input>
 				        </FormItem>
 			    	</Col>
 			    	<Col span="8">
 			        	<FormItem label="联系人类别：">
 				            <Select v-model="form_item.C_contact_type">
-				                <Option value="0">本人</Option>
-				                <Option value="1">朋友</Option>
-				                <Option value="2">亲人</Option>
+				                <Option value="本人">本人</Option>
+				                <Option value="朋友">朋友</Option>
+				                <Option value="亲人">亲人</Option>
 			            	</Select>
 			        	</FormItem>
 			        </Col>
-		        </Row>		        
+		        </Row>	
+		        <Row>
+		        	<Col span="16">
+			        	<FormItem label="省/市/区：">
+			        		<Row>
+			        			<Col span="24">
+	                        		<al-cascader placeholder="请选择省/市/区" v-model="C_p_c" data-type='name' level='2' auto/>
+	                        	</Col>
+	                        </Row>			        
+                    	</FormItem>
+		        	</Col>
+	        		<Col span="8">	
+			        	<FormItem label="近视时间："  prop="C_myopia_date">
+			        		 <DatePicker type="date" v-model="form_item.C_myopia_date" style="width:182px;" placeholder="选择日期"></DatePicker>
+				        </FormItem>
+			    	</Col>		        	
+		        </Row>		        	        
 		        <Row>
 		        	<Col span="24">
 			        	<FormItem label="详细地址：">	
@@ -169,7 +170,6 @@
 		C_emergency_contact: '',
 		C_contact_phone: '',
 		C_contact_type: '',
-		C_default_contact: '',
 		C_remark: '',
 	}
 	
@@ -181,15 +181,17 @@
 				modal_loading: false,
 				loading: true ,	
 				tb_loading: false ,		
-				cu_modali: false ,		
-				C_p_c:[],			
+				cu_modali: false ,	
+				C_code_disable: false,	
+				C_p_c: [],			
 				maintb: {
 					cur_sel_index:null,
 					filter: {
 						C_name:''
 					},
-					total: 100,					
+					total: 0,					
 					initTable: [],
+					list_data: [],	
 					list_columns: [
 						{ width: 130, key: 'C_code', title: '客戶编号', sortable: true },
 						{ width: 130, key: 'C_name', title: '客户姓名', sortable: true },					
@@ -200,10 +202,9 @@
 						{ width: 130, key: 'C_area', title: '区域', },
 						{ width: 130, key: 'C_address', title: '详细地址', },
 						{ width: 130, key: 'C_myopia_date', title: '近视时间', sortable: true },
-						{ width: 130, key: 'C_emergency_contact', title: '紧急联系人' },
+						{ width: 130, key: 'C_emergency_contact', title: '联系人' },
 						{ width: 130, key: 'C_contact_phone', title: '联系人电话' },
 						{ width: 130, key: 'C_contact_type', title: '联系人类别', sortable: true },
-						{ width: 130, key: 'C_default_contact', title: '默认联系人' },
 						{ width: 130, key: 'C_remark', title: '备注' },
 						{ width: 130, key: 'C_createdate', title: '创建时间', sortable: true },
 						{ width: 130, key: 'C_updatedate', title: '更新时间', sortable: true },
@@ -249,37 +250,25 @@
 	                            ]);
 							}
 						}
-					],
-					list_data: [
-						{
-							C_id :'001' , 
-							C_code:'x00001' , 
-							C_type: '学生' , 
-							C_name: '陈晓丽' , 
-							C_sex: '女' ,
-							C_age: '14',
-							C_school: '北京小学',
-							C_province: '安徽省',
-							C_city: '合肥市',
-							C_area: '蜀山区',
-							C_address: '某某公寓',
-							C_myopia_date: '2017-12-30',
-							C_emergency_contact: '陈旭华',
-							C_contact_phone: '13277781234',
-							C_contact_type: '亲人',
-							C_default_contact: '紧急联系人',
-							C_remark: '不是本地人不经常出现在本市区',
-						}
-					],					
+					]
 				},
-				form_item:{},
+				form_item: {},
 	            formRules: {
 	                C_name: [
 	                    { required: true, message: '请填客户名称', trigger: 'blur' }
 	                ],
 	                C_code: [
 	                    { required: true, message: '请填客户编码', trigger: 'blur' }
-	                ]
+	                ],
+	                C_emergency_contact: [
+	                    { required: true, message: '请填写联系人', trigger: 'blur' }
+	                ],
+	                C_contact_phone: [
+	                    { required: true, pattern: /^1\d{10}$/, message: '请填写联系电话', trigger: 'blur' }
+	                ],
+	                C_myopia_date: [
+	                    { required: true, type: 'date', message: '请选择近视时间', trigger: 'change' }
+	                ],	                                               
 	            },
 			}
 		},
@@ -290,21 +279,24 @@
 
 			cancel(){
 				this.cu_modali=false
+				this.$refs['form_item'].resetFields()
 			},
 
             show (index) {
                 this.$Modal.info({
-                    title: '用户信息',
+                    title: '客户信息',
                     content: this.show_handle(this.maintb.list_data[index])
                 })
+
             },
 
             add () {
-            	this.form_item= util.deepCopy(default_form)
             	this.C_p_c=[]
+            	this.form_item= util.deepCopy(default_form)
+            	this.C_code_disable=false
             	this.cu_modali = true
-            	
             },
+
             remove (index) {
             	this.delete_modal = true  
             	this.maintb.cur_sel_index = index
@@ -321,9 +313,10 @@
             	this.form_item=Object.assign(this.form_item,this.maintb.list_data[index])
             	this.C_p_c=[this.form_item.C_province,this.form_item.C_city,this.form_item.C_area]
             	this.form_item.state='edit'
-            	
+            	this.C_code_disable=true
             	this.cu_modali = true
             },
+
             del () {
                 this.modal_loading = true
                 let id=this.maintb.list_data[this.maintb.cur_sel_index].C_id
@@ -367,8 +360,8 @@
 				this.maintb.list_data=[]
 	        	util.ajax.post(url.search,Object.assign({page:page},filter)).then((res) => {
 	        		if(res.code){
-	        			//this.maintb.total=res.total
-						//this.maintb.list_data=data
+	        			this.maintb.total=res.total
+						this.maintb.list_data=res.data
 	        		}
 	        		this.tb_loading=false
 	        	})
@@ -377,6 +370,11 @@
 	        handleSubmit () {
 	            this.$refs['form_item'].validate((valid) => {
 	                if (valid) {
+	                	if(this.C_p_c.length){
+		                	this.form_item.C_province=this.C_p_c[0]
+		                	this.form_item.C_city=this.C_p_c[1]
+		                	this.form_item.C_area=this.C_p_c[2]
+	                	}
 			        	util.ajax.post(url.operate,this.form_item).then((res) => {
 			        		if(res.code){
 			        			this.$Message.success('操作成功！');
@@ -408,7 +406,7 @@
 			}
 		},
 		mounted () {
-			//this.init()
+			this.init()
 		}
 	}
 </script>

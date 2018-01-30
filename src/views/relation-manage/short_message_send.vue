@@ -27,7 +27,7 @@
 		<Input v-model="formdata.msgText" type="textarea" :rows="10" placeholder="请输入短信模板内容..."></Input>
 		<div class="send">
 			<DatePicker type="datetime" :editable="false" placement="top-start" v-model="formdata.sendTime" :options="timeOption" format="yyyy-MM-dd HH:mm" placeholder="选择发送时间" style="width: 200px"></DatePicker>
-			<Button type="success" @click="send">提交</Button>
+			<Button type="success" @click="send" :loading="loading">提交</Button>
 		</div>
 	</div>
 </template>
@@ -42,8 +42,8 @@
 		name:'short_message_send',
 		data(){
 			return {
-                mockData: this.getMockData(),
-                
+                mockData:[],
+                loading:false,
                 listStyle: {
                     width: '380px',
                     height: '407px',
@@ -70,23 +70,18 @@
         	},
             getMockData () {
                 let mockData = []
-                util.ajax.post('http://120.79.137.79/LDproject/public/add',{}).then((res) => {
-                    console.log(res)
+                util.ajax.post(url.list,{}).then((res) => {
+                	if(res.code){
+                        res.data.map((item) => {
+                            mockData.push({
+                                key: item.C_id.toString(),
+                                label:item.C_name.toString(),
+                                description: item.C_type+' 年龄'+item.age
+                            })
+                        })
+                	}
+                    this.mockData=mockData
                 })
-                // util.ajax.post(url.list,{}).then((res) => {
-                // 	if(res.code){
-                // 		this.mockData=res.data
-                // 	}
-                // })
-
-                for (let i = 1; i <= 20; i++) {
-                    mockData.push({
-                        key: i.toString(),
-                        label:i.toString(),
-                        description: '学生'
-                    });
-                }
-                this.mockData=mockData
             },
             handleChange (newTargetKeys) {
                 this.formdata.targetKeys = newTargetKeys
@@ -108,12 +103,14 @@
             			return
             		}
             	}
+                this.loading=true
                 util.ajax.post(url.send,this.formdata).then((res) => {
                 	if(res.code){
                 		this.$Message.success('提交成功!');
                 	}else{
                 		this.$Message.error('提交失败！');
                 	}
+                    this.loading=false
                 })
             }
         },

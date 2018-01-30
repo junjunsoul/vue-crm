@@ -13,11 +13,7 @@ util.title = function (title) {
     window.document.title = title;
 };
 
-const ajaxUrl = env === 'development'
-    ? 'http://localhost:8080'
-    : env === 'production'
-        ? 'https://www.url.com'
-        : 'https://debug.url.com';
+const ajaxUrl ='http://localhost:8080'
 
 util.ajax = axios.create({
     baseURL: ajaxUrl,
@@ -42,9 +38,7 @@ util.areaName = function (code){
             return AreaData[i][code]
         }
     }
-    AreaData.map((item) => {
-
-    })
+    return ''
 }
 
 util.search = function (data, argumentObj) {
