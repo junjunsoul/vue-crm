@@ -27,7 +27,7 @@
                             </Input>
                         </FormItem>
                         <FormItem>
-                            <Button @click="handleSubmit" type="primary" long>登录</Button>
+                            <Button @click="handleSubmit" type="primary" :loading="loading" long>登录</Button>
                         </FormItem>
                     </Form>
                     <p class="login-tip">请输入用户名和密码</p>
@@ -39,13 +39,18 @@
 
 <script>
 import Cookies from 'js-cookie';
+ import util from '@/libs/util'
+let url={
+    login:'/user/login'
+}
 export default {
     data () {
         return {
             form: {
-                userName: 'iview_admin',
+                userName: 'admin',
                 password: ''
             },
+            loading:false,
             rules: {
                 userName: [
                     { required: true, message: '账号不能为空', trigger: 'blur' }
@@ -60,11 +65,20 @@ export default {
         handleSubmit () {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    Cookies.set('password', this.form.password);
-                    this.$router.push({
-                        name: 'record_index'
-                    });
+                    this.loading=true
+                    util.ajax(this).post(url.login,{a_login:this.form.userName,a_password:this.form.password}).then((res) => {
+                        this.loading=false
+                        let r=res.data
+                        if(r.code){
+                            Cookies.set('user', this.form.userName);
+                            Cookies.set('password', this.form.password);
+                            Cookies.set('a_api_token', r.data);
+                            this.$router.push({
+                                name: 'record_index'
+                            });                            
+                        }
+                    })
+
                 }
             });
         }

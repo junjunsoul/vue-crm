@@ -24,7 +24,7 @@
 		        <Button @click="addTag('@data ')">@她人</Button>
 		    </ButtonGroup>
 		</div>
-		<Input v-model="formdata.msgText" type="textarea" :rows="10" placeholder="请输入短信模板内容..."></Input>
+		<Input v-model="formdata.msgText" type="textarea" :rows="7" placeholder="请输入短信模板内容..."></Input>
 		<div class="send">
 			<DatePicker type="datetime" :editable="false" placement="top-start" v-model="formdata.sendTime" :options="timeOption" format="yyyy-MM-dd HH:mm" placeholder="选择发送时间" style="width: 200px"></DatePicker>
 			<Button type="success" @click="send" :loading="loading">提交</Button>
@@ -46,7 +46,7 @@
                 loading:false,
                 listStyle: {
                     width: '380px',
-                    height: '407px',
+                    height: '350px',
                     backgroundColor:'#fff'
                 },
 				formdata:{
@@ -70,7 +70,7 @@
         	},
             getMockData () {
                 let mockData = []
-                util.ajax.post(url.list,{}).then((res) => {
+                util.ajax(this).post(url.list,{}).then((res) => {
                 	if(res.code){
                         res.data.map((item) => {
                             mockData.push({
@@ -104,7 +104,7 @@
             		}
             	}
                 this.loading=true
-                util.ajax.post(url.send,this.formdata).then((res) => {
+                util.ajax(this).post(url.send,this.formdata).then((res) => {
                 	if(res.code){
                 		this.$Message.success('提交成功!');
                 	}else{

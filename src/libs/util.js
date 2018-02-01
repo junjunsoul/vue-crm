@@ -4,7 +4,7 @@ import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
 import AreaData from 'area-data';
-
+import Cookies from 'js-cookie';
 let util = {
 
 };
@@ -13,25 +13,26 @@ util.title = function (title) {
     window.document.title = title;
 };
 
-const ajaxUrl ='http://localhost:8080'
+const ajaxUrl ='http://120.79.137.79/LDproject/public'
 
-util.ajax = axios.create({
-    baseURL: ajaxUrl,
-    timeout: 30000,
-    responseType: 'json', 
-    // headers: {'Content-Type': 'application/json'},
-    validateStatus: function (status) {
-        let res=status >= 200 && status < 300; // 默认的
-        if(res==false){
-            vueVm.$Notice.error({
-                title: '错误码：'+status,
-                desc: '网络有问题咯，请联系管理员大大！'
-            })
+util.ajax =function(vm){
+       return axios.create({
+        baseURL: ajaxUrl,
+        timeout: 30000,
+        responseType: 'json', 
+        data:{a_api_token:Cookies.get('a_api_token')},
+        validateStatus: function (status) {
+            let res=status >= 200 && status < 300; // 默认的
+            if(res==false){
+                vm.$Notice.error({
+                    title: '错误码：'+status,
+                    desc: '网络有问题咯，请联系管理员大大！'
+                })
+            }
+            return res
         }
-        return res
-    }
-});
-
+    });
+}
 util.areaName = function (code){
     for(const i in AreaData){
         if(AreaData[i][code]){

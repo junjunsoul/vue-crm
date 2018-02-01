@@ -72,7 +72,7 @@
 	let url={
 		operate: '/bar',
 		delete: '/bar',
-		search: '/bar'
+		search: '/user/info'
 	}
     let default_form = {
 		state: 'add',    	
@@ -97,14 +97,7 @@
 					},
 					total: 0,					
 					initTable: [],
-					list_data: [
-						{
-							A_id:121,
-							A_login:'junjunsoul',
-							A_Password:'12312312',
-							A_use:'0'
-						}
-					],
+					list_data: [],
 					list_columns: [
 						{ width: 130, key: 'A_login', title: '账号' },
 						{ width: 130, key: 'A_Password', title: '密码' },					
@@ -212,7 +205,7 @@
             del () {
                 this.modal_loading = true
                 let id=this.maintb.list_data[this.maintb.cur_sel_index].A_id
-	        	util.ajax.post(url.delete,{A_id:id}).then((res) => {
+	        	util.ajax(this).post(url.delete,{A_id:id}).then((res) => {
 	        		if(res.code){
 		                    this.modal_loading = false
 		                    this.delete_modal = false
@@ -250,7 +243,7 @@
 			getData(page=1,filter={}){
 				this.tb_loading=true
 				this.maintb.list_data=[]
-	        	util.ajax.post(url.search,Object.assign({page:page},filter)).then((res) => {
+	        	util.ajax(this).post(url.search,Object.assign({page:page},filter)).then((res) => {
 	        		if(res.code){
 	        			this.maintb.total=res.total
 						this.maintb.list_data=res.data
@@ -262,7 +255,7 @@
 	        handleSubmit () {
 	            this.$refs['form_item'].validate((valid) => {
 	                if (valid) {
-			        	util.ajax.post(url.operate,this.form_item).then((res) => {
+			        	util.ajax(this).post(url.operate,this.form_item).then((res) => {
 			        		if(res.code){
 			        			this.$Message.success('操作成功！');
 			        			this.getData()
@@ -293,7 +286,7 @@
 			}
 		},
 		mounted () {
-			//this.init()
+			this.init()
 		}
 	}
 </script>

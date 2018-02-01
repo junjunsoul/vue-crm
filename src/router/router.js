@@ -84,7 +84,6 @@ export const appRouter = [
         icon: 'ios-color-filter',
         name: 'relation',
         title: '客户关系管理',
-        access: 0,
         component: Main,
         children:[
             { path: 'short_message_send', title: '短信发送', name: 'short_message_send', icon: 'android-send', component:() => import('@/views/relation-manage/short_message_send.vue') },

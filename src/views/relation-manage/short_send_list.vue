@@ -119,7 +119,7 @@
 			getData(page=1,filter={}){
 				this.tb_loading=true
 				this.maintb.list_data=[]
-	        	util.ajax.post(url.search,Object.assign({page:page},filter)).then((res) => {
+	        	util.ajax(this).post(url.search,Object.assign({page:page},filter)).then((res) => {
 	        		if(res.code){
 	        			this.maintb.total=res.total
 						this.maintb.list_data=res.data

@@ -320,7 +320,7 @@
             del () {
                 this.modal_loading = true
                 let id=this.maintb.list_data[this.maintb.cur_sel_index].C_id
-	        	util.ajax.post(url.delete,{C_id:id}).then((res) => {
+	        	util.ajax(this).post(url.delete,{C_id:id}).then((res) => {
 	        		if(res.code){
 		                    this.modal_loading = false
 		                    this.delete_modal = false
@@ -358,7 +358,7 @@
 			getData(page=1,filter={}){
 				this.tb_loading=true
 				this.maintb.list_data=[]
-	        	util.ajax.post(url.search,Object.assign({page:page},filter)).then((res) => {
+	        	util.ajax(this).post(url.search,Object.assign({page:page},filter)).then((res) => {
 	        		if(res.code){
 	        			this.maintb.total=res.total
 						this.maintb.list_data=res.data
@@ -375,7 +375,7 @@
 		                	this.form_item.C_city=this.C_p_c[1]
 		                	this.form_item.C_area=this.C_p_c[2]
 	                	}
-			        	util.ajax.post(url.operate,this.form_item).then((res) => {
+			        	util.ajax(this).post(url.operate,this.form_item).then((res) => {
 			        		if(res.code){
 			        			this.$Message.success('操作成功！');
 			        			this.getData()
