@@ -70,9 +70,9 @@ export default {
                         this.loading=false
                         let r=res.data
                         if(r.code){
-                            Cookies.set('user', this.form.userName);
-                            Cookies.set('password', this.form.password);
-                            Cookies.set('a_api_token', r.data);
+                            Cookies.set('user', this.form.userName,{ expires:1 });
+                            Cookies.set('password', this.form.password,{ expires:1 });
+                            Cookies.set('a_api_token', r.data,{ expires:1 });
                             this.$router.push({
                                 name: 'record_index'
                             });                            

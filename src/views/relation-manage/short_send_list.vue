@@ -6,7 +6,7 @@
 		<div class="short-query-card">
 		    <Card shadow>
 		      <p>搜索条件：</p>
-		      <Input v-model="maintb.filter.C_name" placeholder="输入账号..." style="width: 150px"></Input>
+		      <Input v-model="maintb.filter.c_name" placeholder="输入账号..." style="width: 150px"></Input>
 		      
 		      <Button type="primary" icon="ios-search" @click="sever_search">查询</Button>
 		    </Card>
@@ -14,7 +14,7 @@
 		<div class="page">
 			<Row>
 				<Col span="20" order="1">
-					<Page :total="maintb.total" show-elevator @on-change="page_chang"></Page>
+					<Page :total="maintb.total" show-elevator @on-change="page_chang" @on-page-size-change="page_size_change" :page-size="maintb.page_size" :current="maintb.current" :page-size-opts="[20,40,50]" show-sizer  show-total></Page>
 				</Col>
 				<Col span="4" order="2" style="text-align: right;">
 				    <Tooltip content="导出表格" placement="left-start" >
@@ -32,7 +32,7 @@
 	//客户关系管理
 	import util from '@/libs/util'
 	let url={
-		search: '/bar'
+		search: '/short/list'
 	}
 	export default{
 		name:'short_send',
@@ -41,17 +41,19 @@
 				maintb: {
 					cur_sel_index:null,
 					filter: {
-						C_name:''
+						c_name:''
 					},
-					total: 0,					
+					total: 0,
+					page_size: 20,
+					current: 1,					
 					initTable: [],
 					list_data: [],
 					list_columns: [
-						{ width: 130, key: 'C_name', title: '客户名称' },
-						{ width: 300, key: 'S_content', title: '内容' },					
-						{ width: 130, key: 'S_sendTime', title: '发送时间' },					
-						{ width: 130, key: 'S_enterTime', title: '录入时间' },					
-						{ width: 130, key: 'S_operator', title: '操作员' },					
+						{ width: 130, key: 'c_name', title: '客户名称' },
+						{ width: 300, key: 's_content', title: '内容' },					
+						{ width: 130, key: 's_sendTime', title: '发送时间' },					
+						{ width: 130, key: 's_enterTime', title: '录入时间' },					
+						{ width: 130, key: 's_operator', title: '操作员' },					
 						{ width: 50, key: 'Action', title: ' ', fixed: 'right', 
 							render: (h, params) => {
 								return h('div', [
@@ -108,7 +110,13 @@
 				return re_str
 			},
 
+			page_size_change(cur){
+				this.maintb.current=1
+				this.getData(1,this.maintb.filter)
+			},
+
 			sever_search(){
+				this.maintb.current=1
 				this.getData(1,this.maintb.filter)
 			},
 
@@ -119,7 +127,7 @@
 			getData(page=1,filter={}){
 				this.tb_loading=true
 				this.maintb.list_data=[]
-	        	util.ajax(this).post(url.search,Object.assign({page:page},filter)).then((res) => {
+	        	util.ajax(this).post(url.search,Object.assign({page:page,page_size:this.maintb.page_size},filter)).then((res) => {
 	        		if(res.code){
 	        			this.maintb.total=res.total
 						this.maintb.list_data=res.data

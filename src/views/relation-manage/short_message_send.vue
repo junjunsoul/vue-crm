@@ -34,8 +34,8 @@
 <script>
 	//短信发送页面
 	let url={
-		list: '/bar',
-		send: '/bar'
+		list: '/short/list',
+		send: '/short/send'
 	}
 	import util from '@/libs/util'
 	export default{

@@ -88,6 +88,7 @@ export const appRouter = [
         children:[
             { path: 'short_message_send', title: '短信发送', name: 'short_message_send', icon: 'android-send', component:() => import('@/views/relation-manage/short_message_send.vue') },
             { path: 'short_send_list', title: '已发送短信', name: 'short_send_list', icon: 'clipboard', component:() => import('@/views/relation-manage/short_send_list.vue') },
+            { path: 'record-eyesight', title: '客户视力跟踪', name: 'record-eyesight', icon: 'clipboard', component:() => import('@/views/record-manage/record-eyesight.vue') },
         ]
     }
 ];

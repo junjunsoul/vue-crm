@@ -7,7 +7,7 @@
 		<div class="user-query-card">
 		    <Card shadow>
 		      <p>搜索条件：</p>
-		      <Input v-model="maintb.filter.A_login" placeholder="输入账号..." style="width: 150px"></Input>
+		      <Input v-model="maintb.filter.a_login" placeholder="输入账号..." style="width: 150px"></Input>
 		      
 		      <Button type="primary" icon="ios-search" @click="sever_search">查询</Button>
 		    </Card>
@@ -15,7 +15,7 @@
 		<div class="page">
 			<Row>
 				<Col span="24">
-					<Page :total="maintb.total" show-elevator @on-change="page_chang"></Page>
+					<Page :total="maintb.total" show-elevator @on-change="page_chang" @on-page-size-change="page_size_change" :page-size="maintb.page_size"  :current="maintb.current":page-size-opts="[20,40,50]" show-total show-sizer></Page>
 				</Col>
 			</Row>
 		</div>
@@ -31,18 +31,18 @@
 	        <Form :model="form_item" ref="form_item" :rules="formRules" :label-width="95" >
 	        	<Row>
 	        		<Col span="8">	
-			        	<FormItem label="用户账号：" prop="A_login">
-				            <Input v-model="form_item.A_login" placeholder="请输入账号..." :disabled="A_login_disable"></Input>
+			        	<FormItem label="用户账号：" prop="a_login">
+				            <Input v-model="form_item.a_login" placeholder="请输入账号..." :disabled="a_login_disable"></Input>
 				        </FormItem>
 			    	</Col>
 	        		<Col span="8">
-			        	<FormItem label="密码：" prop="A_Password">
-				            <Input v-model="form_item.A_Password" placeholder="请输入密码..."></Input>
+			        	<FormItem label="密码：" prop="a_Password">
+				            <Input v-model="form_item.a_Password" placeholder="请输入密码..."></Input>
 				        </FormItem>
 			    	</Col>
 			    	<Col span="8">
 			        	<FormItem label="是否启用：">
-				            <Select v-model="form_item.A_use">
+				            <Select v-model="form_item.a_use">
 				                <Option value="1">启用</Option>
 				                <Option value="0">禁用</Option>
 			            	</Select>
@@ -70,15 +70,15 @@
 	//用户管理
 	import util from '@/libs/util'
 	let url={
-		operate: '/bar',
-		delete: '/bar',
-		search: '/user/info'
+		operate: '/user/operate',
+		delete: '/user/delete',
+		search: '/user/list'
 	}
     let default_form = {
 		state: 'add',    	
-		A_login:'' , 
-		A_Password: '' , 
-		A_use: '1' 
+		a_login:'' , 
+		a_Password: '' , 
+		a_use: '1' 
 	}
 	export default{
 		name:'userManage',
@@ -88,22 +88,24 @@
 				modal_loading: false,
 				loading: true ,	
 				tb_loading: false ,	
-				A_login_disable: false,
+				a_login_disable: false,
 				cu_modali: false ,				
 				maintb: {
 					cur_sel_index:null,
 					filter: {
-						A_login:''
+						a_login:''
 					},
-					total: 0,					
+					total: 0,	
+					page_size:20,
+					current:1,				
 					initTable: [],
 					list_data: [],
 					list_columns: [
-						{ width: 130, key: 'A_login', title: '账号' },
-						{ width: 130, key: 'A_Password', title: '密码' },					
-						{ width: 110, key: 'A_use', title: '是否启用', sortable: true,
+						{ width: 130, key: 'a_login', title: '账号' },
+						{ width: 130, key: 'a_Password', title: '密码' },					
+						{ width: 110, key: 'a_use', title: '是否启用', sortable: true,
 							render:(h,params) => { 
-								return params.row.A_use=='1'?'是':'否'
+								return params.row.a_use=='1'?'是':'否'
 							} 
 						},
 						{ width: 150, key: 'Action', title: ' ', fixed: 'right', 
@@ -151,10 +153,10 @@
 				},
 				form_item: {},
 	            formRules: {
-	                A_login: [
+	                a_login: [
 	                    { required: true, message: '请填写账号', trigger: 'blur' }
 	                ],
-	                A_Password: [
+	                a_Password: [
 	                    { required: true, message: '请填写密码', trigger: 'blur' }
 	                ]	                                               
 	            },
@@ -179,7 +181,7 @@
 
             add () {
             	this.form_item= util.deepCopy(default_form)
-            	this.A_login_disable=false
+            	this.a_login_disable=false
             	this.cu_modali = true
             },
 
@@ -198,14 +200,14 @@
             edit (index) {
             	this.form_item=Object.assign(this.form_item,this.maintb.list_data[index])
             	this.form_item.state='edit'
-            	this.A_login_disable=true
+            	this.a_login_disable=true
             	this.cu_modali = true
             },
 
             del () {
                 this.modal_loading = true
-                let id=this.maintb.list_data[this.maintb.cur_sel_index].A_id
-	        	util.ajax(this).post(url.delete,{A_id:id}).then((res) => {
+                let id=this.maintb.list_data[this.maintb.cur_sel_index].a_id
+	        	util.ajax(this).post(url.delete,{a_id:id}).then((res) => {
 	        		if(res.code){
 		                    this.modal_loading = false
 		                    this.delete_modal = false
@@ -233,6 +235,13 @@
 			},
 
 			sever_search(){
+				this.maintb.current=1
+				this.getData(1,this.maintb.filter)
+
+			},
+
+			page_size_change(cur){
+				this.maintb.current=1
 				this.getData(1,this.maintb.filter)
 			},
 
@@ -243,7 +252,7 @@
 			getData(page=1,filter={}){
 				this.tb_loading=true
 				this.maintb.list_data=[]
-	        	util.ajax(this).post(url.search,Object.assign({page:page},filter)).then((res) => {
+	        	util.ajax(this).post(url.search,Object.assign({page:page,page_size:this.maintb.page_size},filter)).then((res) => {
 	        		if(res.code){
 	        			this.maintb.total=res.total
 						this.maintb.list_data=res.data
